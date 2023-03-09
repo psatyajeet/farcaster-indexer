@@ -10,8 +10,11 @@
     "dev": "tsc && node ./dist/index.js",
     "auth": "tsc && node ./dist/helpers/auth.js",
     "migrate": "tsc && node ./dist/helpers/migrate-profiles.js",
+    "prettier-check": "prettier 'src/**/*.{ts,js}' --cache --list-different",
+    "prettier-run": "prettier 'src/**/*.{ts,js}' -w --cache",
     "seed": "tsc && node ./dist/helpers/seed.js",
-    "seed:verifications": "tsc && node ./dist/helpers/seed.js --verifications"
+    "seed:verifications": "tsc && node ./dist/helpers/seed.js --verifications",
+    "test": "jest"
   },
   "dependencies": {
     "@standard-crypto/farcaster-js": "^5.5.2",
@@ -22,8 +25,14 @@
     "node-cron": "3.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.0",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.21.0",
+    "@jest/globals": "^29.5.0",
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
+    "@types/jest": "^29.4.0",
     "@types/node": "^18.7.21",
+    "babel-jest": "^29.5.0",
     "prettier": "^2.8.1",
     "typescript": "^4.8.3"
   }

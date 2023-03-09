@@ -23,9 +23,22 @@ const getIdRegistryEvents = async ({
   fromBlock,
 }: GetLogsParams) => {
   // Fetch Transfer or Register event logs emitted by IdRegistry
-  const logs = await provider.getLogs({
+
+  const earlyLogs = await provider.getLogs({
     address: contract.address,
-    fromBlock: fromBlock || 7648700,
+    fromBlock: 7648700,
+    toBlock: 7909982,
+    topics: [
+      [
+        '0x3cd6a0ffcc37406d9958e09bba79ff19d8237819eb2e1911f9edbce656499c87', // Register
+        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', // Transfer
+      ],
+    ],
+  })
+
+  const latestLogs = await provider.getLogs({
+    address: contract.address,
+    fromBlock: 7909982 + 1,
     toBlock: 'latest',
     topics: [
       [
@@ -34,6 +47,8 @@ const getIdRegistryEvents = async ({
       ],
     ],
   })
+
+  const logs = [...earlyLogs, ...latestLogs]
 
   // Sort logs by chronologically by block number (note: does not sort within blocks)
   const sortedLogs = logs.sort((a, b) =>

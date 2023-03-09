@@ -2,7 +2,7 @@ import got from 'got'
 
 import { MERKLE_REQUEST_OPTIONS } from '../merkle.js'
 import supabase from '../supabase.js'
-import { Cast, FlattenedCast, MerkleResponse } from '../types/index'
+import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index'
 import { breakIntoChunks } from '../utils.js'
 
 /**
@@ -11,8 +11,10 @@ import { breakIntoChunks } from '../utils.js'
  */
 export async function indexAllCasts(limit?: number) {
   const startTime = Date.now()
+  console.log(`Indexing casts at ${startTime.toString()}...`)
   const allCasts = await getAllCasts(limit)
   const cleanedCasts = cleanCasts(allCasts)
+  const allTags = getAllTags(cleanedCasts)
 
   const formattedCasts: FlattenedCast[] = cleanedCasts.map((c) => {
     return {
@@ -44,6 +46,20 @@ export async function indexAllCasts(limit?: number) {
   for (const chunk of chunks) {
     const { error } = await supabase.from('casts').upsert(chunk, {
       onConflict: 'hash',
+    })
+
+    if (error) {
+      throw error
+    }
+  }
+
+  // Break allTags into chunks of 1000
+  const tagChunks = breakIntoChunks(allTags, 1000)
+
+  // Upsert each chunk into the Supabase table
+  for (const tagChunk of tagChunks) {
+    const { error } = await supabase.from('cast_tags').upsert(tagChunk, {
+      onConflict: 'cast_hash,tag',
     })
 
     if (error) {
@@ -133,4 +149,38 @@ function cleanCasts(casts: Cast[]): Cast[] {
   }
 
   return cleanedCasts
+}
+
+export function getAllTags(casts: Cast[]): CastTag[] {
+  const cleanedTags: CastTag[] = new Array()
+
+  for (const cast of casts) {
+    const text = cast.text
+
+    // Find all hashtags in text
+    const tags = text.match(/#[a-zA-Z][\w]+/g)
+
+    // If no matches found, continue
+    if (!tags) {
+      continue
+    } else {
+      const processedTags = new Set<string>()
+      for (const tag of tags) {
+        const lowerCaseTag = tag.toLowerCase()
+        if (tag.length <= 2) {
+          continue // Skip tags that are just a single character
+        }
+        if (processedTags.has(lowerCaseTag)) {
+          continue // Skip tags that have already been processed
+        }
+        cleanedTags.push({
+          cast_hash: cast.hash,
+          tag: tag.slice(1),
+        })
+        processedTags.add(lowerCaseTag)
+      }
+    }
+  }
+
+  return cleanedTags
 }
