@@ -122,6 +122,11 @@ export interface FlattenedCast {
   deleted: boolean
 }
 
+export interface CastTag {
+  cast_hash: string
+  tag: string
+}
+
 export interface FlattenedVerification {
   fid: number
   address: string
