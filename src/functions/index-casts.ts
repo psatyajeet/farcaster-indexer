@@ -14,7 +14,6 @@ export async function indexAllCasts(limit?: number) {
   console.log(`Indexing casts at ${startTime.toString()}...`)
   const allCasts = await getAllCasts(limit)
   const cleanedCasts = cleanCasts(allCasts)
-  const allTags = getAllTags(cleanedCasts)
 
   const formattedCasts: FlattenedCast[] = cleanedCasts.map((c) => {
     return {
@@ -53,6 +52,11 @@ export async function indexAllCasts(limit?: number) {
     }
   }
 
+  console.log(`Started getting tags`)
+  // Get all tags from the casts
+  const allTags = getAllTags(cleanedCasts)
+  console.log(`Finished getting tags`)
+
   // Break allTags into chunks of 1000
   const tagChunks = breakIntoChunks(allTags, 1000)
 
@@ -67,6 +71,30 @@ export async function indexAllCasts(limit?: number) {
     }
   }
 
+  console.log(`Started getting tag mentions`)
+  // Get all unique tags from cast_tags table
+  const { data, error } = await supabase.from('cast_tags').select('tag')
+  if (error || !data) {
+    console.log(`No tags found`)
+  } else {
+    const uniqueTags = Array.from(new Set(data.map((d) => d.tag)))
+    const tagMentions = getAllTagMentions(cleanedCasts, uniqueTags)
+
+    // Break allTags into chunks of 1000
+    const tagChunks = breakIntoChunks(tagMentions, 1000)
+
+    // Upsert each chunk into the Supabase table
+    for (const tagChunk of tagChunks) {
+      const { error } = await supabase.from('cast_tags').upsert(tagChunk, {
+        onConflict: 'cast_hash,tag',
+      })
+
+      if (error) {
+        throw error
+      }
+    }
+  }
+
   const endTime = Date.now()
   const duration = (endTime - startTime) / 1000
 
@@ -74,6 +102,8 @@ export async function indexAllCasts(limit?: number) {
     // If it takes more than 60 seconds, log the duration so we can optimize
     console.log(`Updated ${formattedCasts.length} casts in ${duration} seconds`)
   }
+
+  console.log(`Finished indexing casts at ${endTime.toString()}`)
 }
 
 /**
@@ -156,9 +186,10 @@ export function getAllTags(casts: Cast[]): CastTag[] {
 
   for (const cast of casts) {
     const text = cast.text
+      .replace(/(https?:\/\/[^\s]+)/g, '')
 
     // Find all hashtags in text
-    const tags = text.match(/#[a-zA-Z][\w]+/g)
+    const tags = text.match(/#[a-zA-Z][\w]+/g) // matches a letter followed by any letter or number
 
     // If no matches found, continue
     if (!tags) {
@@ -176,6 +207,42 @@ export function getAllTags(casts: Cast[]): CastTag[] {
         cleanedTags.push({
           cast_hash: cast.hash,
           tag: tag.slice(1),
+          implicit: false,
+        })
+        processedTags.add(lowerCaseTag)
+      }
+    }
+  }
+
+  return cleanedTags
+}
+
+export function getAllTagMentions(casts: Cast[], tags: string[]): CastTag[] {
+  const cleanedTags: CastTag[] = new Array()
+  const singleStringTags = tags.join('|')
+
+  for (const cast of casts) {
+    const text = cast.text
+      .replace(/(https?:\/\/[^\s]+)/g, '')
+      .replace(/#[a-zA-Z][\w]+/g, '')
+
+    // Find all instances of tags in text
+    const matches = text.match(new RegExp(`(${singleStringTags})`, 'gi'))
+
+    // If no matches found, continue
+    if (!matches) {
+      continue
+    } else {
+      const processedTags = new Set<string>()
+      for (const match of matches) {
+        const lowerCaseTag = match.toLowerCase()
+        if (processedTags.has(lowerCaseTag)) {
+          continue // Skip tags that have already been processed
+        }
+        cleanedTags.push({
+          cast_hash: cast.hash,
+          tag: match,
+          implicit: true,
         })
         processedTags.add(lowerCaseTag)
       }

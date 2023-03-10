@@ -119,6 +119,7 @@ export interface FlattenedCast {
 export interface CastTag {
   cast_hash: string
   tag: string
+  implicit: boolean
 }
 
 export interface FlattenedVerification {

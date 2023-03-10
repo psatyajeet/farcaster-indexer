@@ -47,6 +47,20 @@ Run the indexer
 yarn start
 ```
 
+## Supabase operations
+
+Reset supabase DB
+```
+supabase db reset
+```
+
+Update migrations with changes to Supabase db
+
+```
+supabase db diff
+supabase db diff -f [name_of_migration_file]
+```
+
 ## How to deploy
 
 Create an empty [Supabase](https://supabase.com/) project and connect to the CLI. If you get a warning that says "Local config differs from linked project", update the `major_version` in [supabase/config.toml](supabase/config.toml) to `15`.
