@@ -6,15 +6,15 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf ./dist",
-    "start": "tsc && node ./dist/index.js",
-    "dev": "tsc && node ./dist/index.js",
-    "auth": "tsc && node ./dist/helpers/auth.js",
-    "migrate": "tsc && node ./dist/helpers/migrate-profiles.js",
+    "start": "tsc && node --es-module-specifier-resolution=node ./dist/index.js",
+    "dev": "tsc && node --es-module-specifier-resolution=node ./dist/index.js",
+    "auth": "tsc && node --es-module-specifier-resolution=node ./dist/helpers/auth.js",
+    "migrate": "tsc && node --es-module-specifier-resolution=node ./dist/helpers/migrate-profiles.js",
     "prettier-check": "prettier 'src/**/*.{ts,js}' --cache --list-different",
     "prettier-run": "prettier 'src/**/*.{ts,js}' -w --cache",
-    "seed": "tsc && node ./dist/helpers/seed.js",
-    "seed:verifications": "tsc && node ./dist/helpers/seed.js --verifications",
-    "test": "jest"
+    "seed": "tsc && node --es-module-specifier-resolution=node ./dist/helpers/seed.js",
+    "seed:verifications": "tsc && node --es-module-specifier-resolution=node ./dist/helpers/seed.js --verifications",
+    "test": "yarn clean && jest"
   },
   "dependencies": {
     "@standard-crypto/farcaster-js": "^5.5.2",
@@ -22,7 +22,8 @@
     "dotenv": "^16.0.1",
     "ethers": "^5.7.2",
     "got": "^11.8.2",
-    "node-cron": "3.0.0"
+    "node-cron": "3.0.0",
+    "typescript": "^4.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",
@@ -33,7 +34,6 @@
     "@types/jest": "^29.4.0",
     "@types/node": "^18.7.21",
     "babel-jest": "^29.5.0",
-    "prettier": "^2.8.1",
-    "typescript": "^4.8.3"
+    "prettier": "^2.8.1"
   }
 }

@@ -1,11 +1,11 @@
 import got from 'got'
 
-import { MERKLE_REQUEST_OPTIONS } from '../merkle.js'
-import supabase from '../supabase.js'
+import { MERKLE_REQUEST_OPTIONS } from '../merkle'
+import supabase from '../supabase'
 import {
+  FlattenedVerification,
   MerkleResponse,
   Verification,
-  FlattenedVerification,
 } from '../types/index'
 
 /**

@@ -1,15 +1,15 @@
 import 'dotenv/config'
-import { providers, Contract } from 'ethers'
+import { Contract, providers } from 'ethers'
 import cron from 'node-cron'
 
-import { idRegistryAddr, idRegistryAbi } from './contracts/id-registry.js'
-import { IdRegistry, IdRegistryEvents } from './contracts/types/id-registry.js'
-import { indexAllCasts } from './functions/index-casts.js'
-import { indexVerifications } from './functions/index-verifications.js'
-import { upsertRegistrations } from './functions/read-logs.js'
-import { updateAllProfiles } from './functions/update-profiles.js'
-import supabase from './supabase.js'
-import { FlattenedProfile } from './types/index.js'
+import { idRegistryAbi, idRegistryAddr } from './contracts/id-registry'
+import { IdRegistry, IdRegistryEvents } from './contracts/types/id-registry'
+import { indexAllCasts } from './functions/index-casts'
+import { indexVerifications } from './functions/index-verifications'
+import { upsertRegistrations } from './functions/read-logs'
+import { updateAllProfiles } from './functions/update-profiles'
+import supabase from './supabase'
+import { FlattenedProfile } from './types/index'
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET
