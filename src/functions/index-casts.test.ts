@@ -1,18 +1,26 @@
-import { Cast } from '../types'
+import { FlattenedCast } from '../types'
 import { getAllTagMentions, getAllTags } from './index-casts'
 
-const createCast = (text: string, hash: string): Cast => {
+const createCast = (text: string, hash: string): FlattenedCast => {
   return {
     hash,
-    threadHash: '',
-    parentHash: '',
-    author: { fid: 1, username: '', displayName: '' },
+    thread_hash: '',
+    parent_hash: '',
+    author_fid: 1, 
+    author_username: '', 
+    author_display_name: '' ,
+    author_pfp_url: null,
+    author_pfp_verified: null,
     text,
-    timestamp: 1,
-    replies: { count: 0 },
-    reactions: { count: 0 },
-    recasts: { count: 0, recasters: [] },
-    watches: { count: 0 },
+    published_at: new Date(),
+    mentions: null,
+    replies_count: 0 ,
+    reactions_count: 0 ,
+    recasts_count: 0,
+    watches_count: 0,
+    parent_author_fid: null,
+    parent_author_username: null,
+    deleted: false
   }
 }
 
