@@ -1,9 +1,9 @@
 import got from 'got'
 
-import { MERKLE_REQUEST_OPTIONS } from '../merkle.js'
-import supabase from '../supabase.js'
+import { MERKLE_REQUEST_OPTIONS } from '../merkle'
+import supabase from '../supabase'
 import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index'
-import { breakIntoChunks } from '../utils.js'
+import { breakIntoChunks } from '../utils'
 
 /**
  * Index the casts from all Farcaster profiles and insert them into Supabase
@@ -185,11 +185,11 @@ export function getAllTags(casts: Cast[]): CastTag[] {
   const cleanedTags: CastTag[] = new Array()
 
   for (const cast of casts) {
-    const text = cast.text
-      .replace(/(https?:\/\/[^\s]+)/g, '')
-
+    const text = cast.text.replace(/(https?:\/\/[^\s]+)/g, '')
     // Find all hashtags in text
-    const tags = text.match(/#[a-zA-Z][\w]+/g) // matches a letter followed by any letter or number
+    // const tags = text.match(/#[a-zA-Z][\w[:punct:]\-_]+/g) // matches a letter followed by any letter or number
+
+    const tags = text.match(/(?:^|\s)#([a-zA-Z][\w’'_-]+)/g) // matches a letter followed by any letter or number
 
     // If no matches found, continue
     if (!tags) {
@@ -206,7 +206,7 @@ export function getAllTags(casts: Cast[]): CastTag[] {
         }
         cleanedTags.push({
           cast_hash: cast.hash,
-          tag: tag.slice(1),
+          tag: tag.replaceAll('#', '').trim(),
           implicit: false,
         })
         processedTags.add(lowerCaseTag)
@@ -227,7 +227,7 @@ export function getAllTagMentions(casts: Cast[], tags: string[]): CastTag[] {
       .replace(/#[a-zA-Z][\w]+/g, '')
 
     // Find all instances of tags in text
-    const matches = text.match(new RegExp(`(${singleStringTags})`, 'gi'))
+    const matches = text.match(new RegExp(`\\b(${singleStringTags})\\b`, 'gi'))
 
     // If no matches found, continue
     if (!matches) {

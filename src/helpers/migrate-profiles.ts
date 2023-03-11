@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import supabase from '../supabase.js'
+import supabase from '../supabase'
 
 /**
  * If you were running the previous version of the indexer and have a 'profiles' table, you can
