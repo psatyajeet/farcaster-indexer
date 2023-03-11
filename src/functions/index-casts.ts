@@ -182,6 +182,7 @@ function cleanCasts(casts: Cast[]): Cast[] {
 }
 
 export function getAllTags(casts: Cast[]): CastTag[] {
+  const TAGS_TO_IGNORE = ['what', 'things', 'did', 'post']
   const cleanedTags: CastTag[] = new Array()
 
   for (const cast of casts) {
@@ -195,10 +196,11 @@ export function getAllTags(casts: Cast[]): CastTag[] {
     if (!tags) {
       continue
     } else {
-      const processedTags = new Set<string>()
+      const processedTags = new Set<string>(TAGS_TO_IGNORE)
       for (const tag of tags) {
-        const lowerCaseTag = tag.toLowerCase()
-        if (tag.length <= 2) {
+        const cleanedTag = tag.replaceAll('#', '').trim();
+        const lowerCaseTag = cleanedTag.toLowerCase()
+        if (cleanedTag.length <= 2) {
           continue // Skip tags that are just a single character
         }
         if (processedTags.has(lowerCaseTag)) {
@@ -206,7 +208,7 @@ export function getAllTags(casts: Cast[]): CastTag[] {
         }
         cleanedTags.push({
           cast_hash: cast.hash,
-          tag: tag.replaceAll('#', '').trim(),
+          tag: cleanedTag,
           implicit: false,
         })
         processedTags.add(lowerCaseTag)
