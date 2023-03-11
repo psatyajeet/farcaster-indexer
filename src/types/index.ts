@@ -126,6 +126,7 @@ export interface CastTag {
   cast_hash: string
   tag: string
   implicit: boolean
+  published_at: Date
 }
 
 export interface FlattenedVerification {

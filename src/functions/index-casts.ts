@@ -63,7 +63,7 @@ export async function indexAllCasts(limit?: number) {
 
   console.log(`Started getting tags`)
   // Get all tags from the casts
-  const allTags = getAllTags(cleanedCasts)
+  const allTags = getAllTags(formattedCasts)
   console.log(`Finished getting tags`)
 
   // Break allTags into chunks of 1000
@@ -87,7 +87,7 @@ export async function indexAllCasts(limit?: number) {
     console.log(`No tags found`)
   } else {
     const uniqueTags = Array.from(new Set(data.map((d) => d.tag)))
-    const tagMentions = getAllTagMentions(cleanedCasts, uniqueTags)
+    const tagMentions = getAllTagMentions(formattedCasts, uniqueTags)
 
     // Break allTags into chunks of 1000
     const tagChunks = breakIntoChunks(tagMentions, 1000)
@@ -190,7 +190,7 @@ function cleanCasts(casts: Cast[]): Cast[] {
   return cleanedCasts
 }
 
-export function getAllTags(casts: Cast[]): CastTag[] {
+export function getAllTags(casts: FlattenedCast[]): CastTag[] {
   const TAGS_TO_IGNORE = ['what', 'things', 'did', 'post']
   const cleanedTags: CastTag[] = new Array()
 
@@ -219,6 +219,7 @@ export function getAllTags(casts: Cast[]): CastTag[] {
           cast_hash: cast.hash,
           tag: cleanedTag,
           implicit: false,
+          published_at: cast.published_at,
         })
         processedTags.add(lowerCaseTag)
       }
@@ -228,7 +229,7 @@ export function getAllTags(casts: Cast[]): CastTag[] {
   return cleanedTags
 }
 
-export function getAllTagMentions(casts: Cast[], tags: string[]): CastTag[] {
+export function getAllTagMentions(casts: FlattenedCast[], tags: string[]): CastTag[] {
   const cleanedTags: CastTag[] = new Array()
   const singleStringTags = tags.join('|')
 
@@ -254,6 +255,7 @@ export function getAllTagMentions(casts: Cast[], tags: string[]): CastTag[] {
           cast_hash: cast.hash,
           tag: match,
           implicit: true,
+          published_at: cast.published_at,
         })
         processedTags.add(lowerCaseTag)
       }
