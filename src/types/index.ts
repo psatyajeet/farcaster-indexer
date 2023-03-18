@@ -23,24 +23,27 @@ interface ProfileCore {
 
 export interface Profile {
   fid: number
-  username: string
+  username?: string
   displayName?: string
   pfp?: PFP
-  profile: {
+  profile?: {
     bio: {
       text: string
       mentions: any[]
     }
   }
-  followerCount: number
-  followingCount: number
+  followerCount?: number
+  followingCount?: number
   referrerUsername?: string
 }
 
 export interface Cast {
   hash: string
+  _hashV1?: string
   threadHash: string
-  parentHash: string
+  _threadHashV1?: string
+  parentHash: string | null
+  _parentHashV1?: string | null
   author: {
     fid: number
     username: string
@@ -82,13 +85,13 @@ export interface Verification {
 
 export interface FlattenedProfile {
   id: number
-  owner?: string
-  username?: string
+  owner?: string | null
+  username?: string | null
   display_name?: string | null
   avatar_url?: string | null
-  avatar_verified?: boolean
-  followers?: number
-  following?: number
+  avatar_verified?: boolean | null
+  followers?: number | null
+  following?: number | null
   bio?: string | null
   referrer?: string | null
   registered_at?: Date
@@ -97,8 +100,11 @@ export interface FlattenedProfile {
 
 export interface FlattenedCast {
   hash: string
+  hash_v1?: string
   thread_hash: string
+  thread_hash_v1?: string
   parent_hash: string | null
+  parent_hash_v1?: string | null
   author_fid: number
   author_username: string | null
   author_display_name: string
