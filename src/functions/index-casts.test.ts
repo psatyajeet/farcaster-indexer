@@ -1,26 +1,28 @@
 import { FlattenedCast } from '../types'
 import { getAllTagMentions, getAllTags } from './index-casts'
 
+const today = new Date('2023-02-01')
+
 const createCast = (text: string, hash: string): FlattenedCast => {
   return {
     hash,
     thread_hash: '',
     parent_hash: '',
-    author_fid: 1, 
-    author_username: '', 
-    author_display_name: '' ,
+    author_fid: 1,
+    author_username: '',
+    author_display_name: '',
     author_pfp_url: null,
     author_pfp_verified: null,
     text,
-    published_at: new Date(),
+    published_at: today,
     mentions: null,
-    replies_count: 0 ,
-    reactions_count: 0 ,
+    replies_count: 0,
+    reactions_count: 0,
     recasts_count: 0,
     watches_count: 0,
     parent_author_fid: null,
     parent_author_username: null,
-    deleted: false
+    deleted: false,
   }
 }
 
@@ -50,16 +52,41 @@ describe('index-casts', () => {
           'one reason I keep coming back to farcaster is because there are people here who would be jealous of a project URL#same',
           '10'
         ),
+        createCast(
+          'What a race by Alonso. Driver of the day hands down!  #F1',
+          '11'
+        ),
       ])
     ).toStrictEqual([
-      { cast_hash: '1', implicit: false, tag: 'Arsenal' },
-      { cast_hash: '2', implicit: false, tag: 'Arsenal' },
-      { cast_hash: '4', implicit: false, tag: 'F1' },
-      { cast_hash: '5', implicit: false, tag: 'NFTs' },
-      { cast_hash: '6', implicit: false, tag: "you're-the-best" },
-      { cast_hash: '7', implicit: false, tag: 'independence-for-all' },
-      { cast_hash: '9', implicit: false, tag: 'you’re-a-technology' },
-      { cast_hash: '9', implicit: false, tag: 'decentralization-is-a-feature' },
+      { cast_hash: '1', implicit: false, tag: 'Arsenal', published_at: today },
+      { cast_hash: '2', implicit: false, tag: 'Arsenal', published_at: today },
+      { cast_hash: '4', implicit: false, tag: 'F1', published_at: today },
+      { cast_hash: '5', implicit: false, tag: 'NFTs', published_at: today },
+      {
+        cast_hash: '6',
+        implicit: false,
+        tag: "you're-the-best",
+        published_at: today,
+      },
+      {
+        cast_hash: '7',
+        implicit: false,
+        tag: 'independence-for-all',
+        published_at: today,
+      },
+      {
+        cast_hash: '9',
+        implicit: false,
+        tag: 'you’re-a-technology',
+        published_at: today,
+      },
+      {
+        cast_hash: '9',
+        implicit: false,
+        tag: 'decentralization-is-a-feature',
+        published_at: today,
+      },
+      { cast_hash: '11', implicit: false, tag: 'F1', published_at: today },
     ])
   })
 
@@ -79,13 +106,17 @@ describe('index-casts', () => {
             '5'
           ),
           createCast('I love arsenal, follow me if you do too!', '6'),
+          createCast(
+            'It’s a great weekend for people joining farcaster! A warm welcome to @crump whose work I mentioned in December https://sharecaster.xyz/pdr/0xf19f01',
+            '7'
+          ),
         ],
         ['Arsenal', 'F1', 'NFTs']
       )
     ).toStrictEqual([
-      { cast_hash: '1', implicit: true, tag: 'Arsenal' },
-      { cast_hash: '3', implicit: true, tag: 'F1' },
-      { cast_hash: '6', implicit: true, tag: 'arsenal' },
+      { cast_hash: '1', implicit: true, tag: 'Arsenal', published_at: today },
+      { cast_hash: '3', implicit: true, tag: 'F1', published_at: today },
+      { cast_hash: '6', implicit: true, tag: 'arsenal', published_at: today },
     ])
   })
 })

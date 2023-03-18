@@ -198,9 +198,9 @@ export function getAllTags(casts: FlattenedCast[]): CastTag[] {
     } else {
       const processedTags = new Set<string>(TAGS_TO_IGNORE)
       for (const tag of tags) {
-        const cleanedTag = tag.replaceAll('#', '').trim();
+        const cleanedTag = tag.replaceAll('#', '').trim()
         const lowerCaseTag = cleanedTag.toLowerCase()
-        if (cleanedTag.length <= 2) {
+        if (cleanedTag.length < 2) {
           continue // Skip tags that are just a single character
         }
         if (processedTags.has(lowerCaseTag)) {
@@ -220,7 +220,10 @@ export function getAllTags(casts: FlattenedCast[]): CastTag[] {
   return cleanedTags
 }
 
-export function getAllTagMentions(casts: FlattenedCast[], tags: string[]): CastTag[] {
+export function getAllTagMentions(
+  casts: FlattenedCast[],
+  tags: string[]
+): CastTag[] {
   const cleanedTags: CastTag[] = new Array()
   const singleStringTags = tags.join('|')
 
