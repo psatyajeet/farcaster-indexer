@@ -82,7 +82,7 @@ export async function indexAllCasts(limit?: number) {
 
   console.log(`Started getting tag mentions`)
   // Get all unique tags from cast_tags table
-  const { data, error } = await supabase.from('cast_tags').select('tag')
+  const { data, error } = await supabase.from('unique_cast_tags').select('tag')
   if (error || !data) {
     console.log(`No tags found`)
   } else {

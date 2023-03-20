@@ -61,6 +61,18 @@ supabase db diff
 supabase db diff -f [name_of_migration_file]
 ```
 
+Add new migration: https://supabase.com/docs/reference/cli/supabase-migration-new
+
+```
+supabase migration new add-unique_cast_tags-view
+```
+
+Apply migration: https://supabase.com/docs/reference/cli/supabase-db-push
+
+```
+supabase db push
+```
+
 ## How to deploy
 
 Create an empty [Supabase](https://supabase.com/) project and connect to the CLI. If you get a warning that says "Local config differs from linked project", update the `major_version` in [supabase/config.toml](supabase/config.toml) to `15`.
