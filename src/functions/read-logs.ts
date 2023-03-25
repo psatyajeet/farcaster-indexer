@@ -1,8 +1,11 @@
-import { Provider } from '@ethersproject/providers'
-import { BaseContract } from 'ethers'
+import { Provider } from '@ethersproject/providers';
+import { BaseContract } from 'ethers';
 
-import supabase from '../supabase'
-import { FlattenedProfile } from '../types'
+
+
+import supabase from '../supabase';
+import { FlattenedProfile } from '../types';
+
 
 interface GetLogsParams {
   provider: Provider
@@ -24,21 +27,9 @@ const getIdRegistryEvents = async ({
 }: GetLogsParams) => {
   // Fetch Transfer or Register event logs emitted by IdRegistry
 
-  const earlyLogs = await provider.getLogs({
+  const logs = await provider.getLogs({
     address: contract.address,
-    fromBlock: 7648700,
-    toBlock: 7909982,
-    topics: [
-      [
-        '0x3cd6a0ffcc37406d9958e09bba79ff19d8237819eb2e1911f9edbce656499c87', // Register
-        '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', // Transfer
-      ],
-    ],
-  })
-
-  const latestLogs = await provider.getLogs({
-    address: contract.address,
-    fromBlock: 7909982 + 1,
+    fromBlock: fromBlock || 7648700,
     toBlock: 'latest',
     topics: [
       [
@@ -48,7 +39,31 @@ const getIdRegistryEvents = async ({
     ],
   })
 
-  const logs = [...earlyLogs, ...latestLogs]
+  // const earlyLogs = await provider.getLogs({
+  //   address: contract.address,
+  //   fromBlock: 7648700,
+  //   toBlock: 7909982,
+  //   topics: [
+  //     [
+  //       '0x3cd6a0ffcc37406d9958e09bba79ff19d8237819eb2e1911f9edbce656499c87', // Register
+  //       '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', // Transfer
+  //     ],
+  //   ],
+  // })
+
+  // const latestLogs = await provider.getLogs({
+  //   address: contract.address,
+  //   fromBlock: 7909982 + 1,
+  //   toBlock: 'latest',
+  //   topics: [
+  //     [
+  //       '0x3cd6a0ffcc37406d9958e09bba79ff19d8237819eb2e1911f9edbce656499c87', // Register
+  //       '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', // Transfer
+  //     ],
+  //   ],
+  // })
+
+  // const logs = [...earlyLogs, ...latestLogs]
 
   // Sort logs by chronologically by block number (note: does not sort within blocks)
   const sortedLogs = logs.sort((a, b) =>
@@ -89,7 +104,7 @@ export async function upsertRegistrations(
   const allRegistrations = await getIdRegistryEvents({
     provider,
     contract,
-    // fromBlock: currentBlock - 100_000, // last ~2 weeks
+    fromBlock: currentBlock - 100_000, // last ~2 weeks
   })
 
   // Insert to Supabase to make sure we have didn't miss data while the indexer was down
