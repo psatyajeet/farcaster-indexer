@@ -50,3 +50,8 @@ cron.schedule('* * * * *', async () => {
 cron.schedule('0 * * * *', async () => {
   await indexVerifications()
 })
+
+// Run job every two hours at :30
+cron.schedule('30 */2 * * *', async () => {
+  await indexAllCasts()
+})

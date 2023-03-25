@@ -110,13 +110,20 @@ describe('index-casts', () => {
             'It’s a great weekend for people joining farcaster! A warm welcome to @crump whose work I mentioned in December https://sharecaster.xyz/pdr/0xf19f01',
             '7'
           ),
+          createCast('Purple #153 received a bid of 0.11Ξ from kmacb.eth', '8'),
+          createCast(
+            "Not sure either. But feel free to discuss it in Purple's Discord https://discord.gg/kx2faZqn",
+            '9'
+          ),
         ],
-        ['Arsenal', 'F1', 'NFTs']
+        ['Arsenal', 'F1', 'NFTs', 'bitcoin', 'purple']
       )
     ).toStrictEqual([
       { cast_hash: '1', implicit: true, tag: 'Arsenal', published_at: today },
       { cast_hash: '3', implicit: true, tag: 'F1', published_at: today },
       { cast_hash: '6', implicit: true, tag: 'arsenal', published_at: today },
+      { cast_hash: '8', implicit: true, tag: 'Purple', published_at: today },
+      { cast_hash: '9', implicit: true, tag: 'Purple', published_at: today },
     ])
   })
 })

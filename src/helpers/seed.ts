@@ -1,8 +1,8 @@
 import 'dotenv/config'
-import { providers, Contract } from 'ethers'
+import { Contract, providers } from 'ethers'
 
 import { indexVerifications } from '../functions/index-verifications.js'
-import { idRegistryAddr, idRegistryAbi } from './../contracts/id-registry.js'
+import { idRegistryAbi, idRegistryAddr } from './../contracts/id-registry.js'
 import { IdRegistry } from './../contracts/types/id-registry.js'
 import { indexAllCasts } from './../functions/index-casts.js'
 import { upsertRegistrations } from './../functions/read-logs.js'

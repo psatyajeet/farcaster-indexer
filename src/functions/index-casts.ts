@@ -5,6 +5,12 @@ import supabase from '../supabase'
 import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index'
 import { breakIntoChunks } from '../utils'
 
+// This isn't deduped for different capitalizations of the same tag
+interface DbTagCount {
+  tag: string
+  tag_count: number
+}
+
 /**
  * Index the casts from all Farcaster profiles and insert them into Supabase
  * @param limit The max number of recent casts to index
@@ -82,8 +88,8 @@ export async function indexAllCasts(limit?: number) {
 
   console.log(`Started getting tag mentions`)
   // Get all unique tags from cast_tags table
-  const { data, error } = await supabase.from('unique_cast_tags').select('tag')
-  if (error || !data) {
+  const data = await getUniqueCastTags()
+  if (!data) {
     console.log(`No tags found`)
   } else {
     const uniqueTags = Array.from(new Set(data.map((d) => d.tag)))
@@ -188,6 +194,37 @@ function cleanCasts(casts: Cast[]): Cast[] {
   }
 
   return cleanedCasts
+}
+
+const PAGE_LIMIT = 1000
+
+async function getUniqueCastTags(): Promise<DbTagCount[]> {
+  const dataCount = await supabase
+    .from('unique_cast_tags')
+    .select('*', { count: 'exact', head: true })
+
+  if (dataCount.error || !dataCount.count) {
+    return []
+  }
+
+  const count = dataCount.count
+
+  let tags = [] as DbTagCount[]
+
+  for (let i = 0; i < count; i += PAGE_LIMIT) {
+    const data = await supabase
+      .from('unique_cast_tags')
+      .select()
+      .range(i, i + PAGE_LIMIT)
+
+    if (data.error || !data.data) {
+      throw data.error
+    }
+
+    tags = tags.concat(data.data as DbTagCount[])
+  }
+
+  return tags
 }
 
 export function getAllTags(casts: FlattenedCast[]): CastTag[] {
