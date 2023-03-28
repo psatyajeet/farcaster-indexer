@@ -1,9 +1,12 @@
-import got from 'got'
+import got from 'got';
 
-import { MERKLE_REQUEST_OPTIONS } from '../merkle'
-import supabase from '../supabase'
-import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index'
-import { breakIntoChunks } from '../utils'
+
+
+import { MERKLE_REQUEST_OPTIONS } from '../merkle';
+import supabase from '../supabase';
+import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index';
+import { breakIntoChunks } from '../utils';
+
 
 // This isn't deduped for different capitalizations of the same tag
 interface DbTagCount {
@@ -139,6 +142,15 @@ async function getAllCasts(limit?: number): Promise<Cast[]> {
     if (!casts) throw new Error('No casts found')
 
     for (const cast of casts) {
+      // Prefixes of mm-fc- fc-mm- ff-mm- are the current ones we use to filter from client. Before when we allowed underscores it was __tt__.
+      if (
+        cast.author.username.includes('mm-fc-') ||
+        cast.author.username.includes('fc-mm-') ||
+        cast.author.username.includes('ff-mm-') ||
+        cast.author.username.includes('__tt__-')
+      ) {
+        continue
+      }
       allCasts.push(cast)
     }
 
