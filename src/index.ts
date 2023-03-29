@@ -42,6 +42,7 @@ await upsertRegistrations(provider, idRegistry)
 
 // Run job every minute
 cron.schedule('* * * * *', async () => {
+  console.log(`Starting minutely index job at ${new Date()}`)
   await indexAllCasts(10_000)
   await updateAllProfiles()
 })
@@ -53,5 +54,6 @@ cron.schedule('0 * * * *', async () => {
 
 // Run job every two hours at :30
 cron.schedule('30 */2 * * *', async () => {
+  console.log(`Starting seed job at ${new Date()}`)
   await indexAllCasts()
 })
