@@ -240,7 +240,7 @@ async function getUniqueCastTags(): Promise<DbTagCount[]> {
 }
 
 export function getAllTags(casts: FlattenedCast[]): CastTag[] {
-  const TAGS_TO_IGNORE = ['what', 'things', 'did', 'post']
+  const TAGS_TO_IGNORE = ['what', 'things', 'did', 'post', 'new']
   const cleanedTags: CastTag[] = new Array()
 
   for (const cast of casts) {
