@@ -144,10 +144,10 @@ async function getAllCasts(limit?: number): Promise<Cast[]> {
     for (const cast of casts) {
       // Prefixes of mm-fc- fc-mm- ff-mm- are the current ones we use to filter from client. Before when we allowed underscores it was __tt__.
       if (
-        cast.author.username.includes('mm-fc-') ||
-        cast.author.username.includes('fc-mm-') ||
-        cast.author.username.includes('ff-mm-') ||
-        cast.author.username.includes('__tt__-')
+        cast.author.username?.includes('mm-fc-') ||
+        cast.author.username?.includes('fc-mm-') ||
+        cast.author.username?.includes('ff-mm-') ||
+        cast.author.username?.includes('__tt__-')
       ) {
         continue
       }
