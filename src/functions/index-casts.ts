@@ -1,12 +1,9 @@
-import got from 'got';
+import got from 'got'
 
-
-
-import { MERKLE_REQUEST_OPTIONS } from '../merkle';
-import supabase from '../supabase';
-import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index';
-import { breakIntoChunks } from '../utils';
-
+import { MERKLE_REQUEST_OPTIONS } from '../merkle'
+import supabase from '../supabase'
+import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index'
+import { breakIntoChunks } from '../utils'
 
 // This isn't deduped for different capitalizations of the same tag
 interface DbTagCount {
@@ -112,6 +109,7 @@ export async function indexAllCasts(limit?: number) {
       }
     }
   }
+  console.log(`Done getting tag mentions`)
 
   const endTime = Date.now()
   const duration = (endTime - startTime) / 1000
@@ -264,6 +262,9 @@ export function getAllTags(casts: FlattenedCast[]): CastTag[] {
         if (processedTags.has(lowerCaseTag)) {
           continue // Skip tags that have already been processed
         }
+        if (!cleanedTag) {
+          continue // Skip empty tags
+        }
         cleanedTags.push({
           cast_hash: cast.hash,
           tag: cleanedTag,
@@ -300,15 +301,16 @@ export function getAllTagMentions(
       const processedTags = new Set<string>()
       for (const match of matches) {
         const lowerCaseTag = match.toLowerCase()
-        if (processedTags.has(lowerCaseTag)) {
-          continue // Skip tags that have already been processed
+        if (!match || processedTags.has(lowerCaseTag)) {
+          continue // Skip tags that have already been processed or are empty
         }
-        cleanedTags.push({
+        const cleanedTag = {
           cast_hash: cast.hash,
           tag: match,
           implicit: true,
           published_at: cast.published_at,
-        })
+        }
+        cleanedTags.push(cleanedTag)
         processedTags.add(lowerCaseTag)
       }
     }
