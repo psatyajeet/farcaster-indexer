@@ -1,16 +1,16 @@
-import got from 'got'
+import got from 'got';
 
-import { MERKLE_REQUEST_OPTIONS } from '../merkle'
-import supabase from '../supabase'
-import { FlattenedProfile, MerkleResponse, Profile } from '../types/index'
-import { breakIntoChunks } from '../utils'
+import { MERKLE_REQUEST_OPTIONS } from '../merkle';
+import supabase from '../supabase';
+import { FlattenedProfile, MerkleResponse, Profile } from '../types/index';
+import { breakIntoChunks } from '../utils';
 
 /**
  * Reformat and upsert all profiles into the database
  */
 export async function updateAllProfiles() {
-  const startTime = Date.now()
-  const allProfiles = await getAllProfiles()
+  const startTime = Date.now();
+  const allProfiles = await getAllProfiles();
 
   const formattedProfiles: FlattenedProfile[] = allProfiles.map((p) => {
     return {
@@ -24,27 +24,29 @@ export async function updateAllProfiles() {
       bio: p.profile?.bio?.text || null,
       referrer: p?.referrerUsername || null,
       updated_at: new Date(),
-    }
-  })
+    };
+  });
 
   // Upsert profiles in chunks to avoid locking the table
-  const chunks = breakIntoChunks(formattedProfiles, 500)
+  const chunks = breakIntoChunks(formattedProfiles, 500);
   for (const chunk of chunks) {
     const { error } = await supabase
       .from('profile')
-      .upsert(chunk, { onConflict: 'id' })
+      .upsert(chunk, { onConflict: 'id' });
 
     if (error) {
-      throw error
+      throw error;
     }
   }
 
-  const endTime = Date.now()
-  const duration = (endTime - startTime) / 1000
+  const endTime = Date.now();
+  const duration = (endTime - startTime) / 1000;
 
   if (duration > 60) {
     // If it takes more than 60 seconds, log the duration so we can optimize
-    console.log(`Updated ${allProfiles.length} profiles in ${duration} seconds`)
+    console.log(
+      `Updated ${allProfiles.length} profiles in ${duration} seconds`
+    );
   }
 }
 
@@ -53,41 +55,41 @@ export async function updateAllProfiles() {
  * @returns An array of all Farcaster profiles
  */
 async function getAllProfiles(): Promise<Profile[]> {
-  const allProfiles: Profile[] = new Array()
-  let endpoint = buildProfileEndpoint()
+  const allProfiles: Profile[] = new Array();
+  let endpoint = buildProfileEndpoint();
 
   while (true) {
-    const _response = await got(endpoint, MERKLE_REQUEST_OPTIONS).json()
+    const _response = await got(endpoint, MERKLE_REQUEST_OPTIONS).json();
 
-    const response = _response as MerkleResponse
-    const profiles = response.result.users
+    const response = _response as MerkleResponse;
+    const profiles = response.result.users;
 
-    if (!profiles) throw new Error('No profiles found')
+    if (!profiles) throw new Error('No profiles found');
 
     for (const profile of profiles) {
-      allProfiles.push(profile)
+      allProfiles.push(profile);
     }
 
     // If there are more profiles, get the next page
-    const cursor = response.next?.cursor
+    const cursor = response.next?.cursor;
     if (cursor) {
-      endpoint = buildProfileEndpoint(cursor)
+      endpoint = buildProfileEndpoint(cursor);
     } else {
-      break
+      break;
     }
   }
 
   // If there are missing ids (warpcast filtering), insert an empty profile
-  const maxId = allProfiles[0].fid
+  const maxId = allProfiles[0].fid;
   for (let i = 1; i <= maxId; i++) {
     if (!allProfiles.find((p) => p.fid === i)) {
       allProfiles.push({
         fid: i,
-      })
+      });
     }
   }
 
-  return allProfiles as Profile[]
+  return allProfiles as Profile[];
 }
 
 /**
@@ -97,5 +99,5 @@ async function getAllProfiles(): Promise<Profile[]> {
 function buildProfileEndpoint(cursor?: string): string {
   return `https://api.warpcast.com/v2/recent-users?limit=1000${
     cursor ? `&cursor=${cursor}` : ''
-  }`
+  }`;
 }

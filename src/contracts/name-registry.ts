@@ -1,4 +1,4 @@
-export const nameRegistryAddr = '0xe3be01d99baa8db9905b33a3ca391238234b79d1'
+export const nameRegistryAddr = '0xe3be01d99baa8db9905b33a3ca391238234b79d1';
 
 export const nameRegistryAbi = [
   { inputs: [], name: 'CallFailed', type: 'error' },
@@ -805,4 +805,4 @@ export const nameRegistryAbi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-]
+];

@@ -1,7 +1,7 @@
-import { FlattenedCast } from '../types'
-import { getAllTagMentions, getAllTags } from './index-casts'
+import { FlattenedCast } from '../types';
+import { getAllTagMentions, getAllTags } from './index-casts';
 
-const today = new Date('2023-02-01')
+const today = new Date('2023-02-01');
 
 const createCast = (text: string, hash: string): FlattenedCast => {
   return {
@@ -23,8 +23,8 @@ const createCast = (text: string, hash: string): FlattenedCast => {
     parent_author_fid: null,
     parent_author_username: null,
     deleted: false,
-  }
-}
+  };
+};
 
 describe('index-casts', () => {
   test('getAllTags should return all tags', () => {
@@ -87,8 +87,8 @@ describe('index-casts', () => {
         published_at: today,
       },
       { cast_hash: '11', implicit: false, tag: 'F1', published_at: today },
-    ])
-  })
+    ]);
+  });
 
   test('getAllTagMentions should return all tags', () => {
     expect(
@@ -124,6 +124,6 @@ describe('index-casts', () => {
       { cast_hash: '6', implicit: true, tag: 'arsenal', published_at: today },
       { cast_hash: '8', implicit: true, tag: 'Purple', published_at: today },
       { cast_hash: '9', implicit: true, tag: 'Purple', published_at: today },
-    ])
-  })
-})
+    ]);
+  });
+});

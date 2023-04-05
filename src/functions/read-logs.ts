@@ -1,16 +1,13 @@
 import { Provider } from '@ethersproject/providers';
 import { BaseContract } from 'ethers';
 
-
-
 import supabase from '../supabase';
 import { FlattenedProfile } from '../types';
 
-
 interface GetLogsParams {
-  provider: Provider
-  contract: BaseContract
-  fromBlock?: number
+  provider: Provider;
+  contract: BaseContract;
+  fromBlock?: number;
 }
 
 /**
@@ -37,7 +34,7 @@ const getIdRegistryEvents = async ({
         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef', // Transfer
       ],
     ],
-  })
+  });
 
   // const earlyLogs = await provider.getLogs({
   //   address: contract.address,
@@ -68,25 +65,25 @@ const getIdRegistryEvents = async ({
   // Sort logs by chronologically by block number (note: does not sort within blocks)
   const sortedLogs = logs.sort((a, b) =>
     a.blockNumber > b.blockNumber ? 1 : -1
-  )
+  );
 
-  const registerEvents: FlattenedProfile[] = new Array()
+  const registerEvents: FlattenedProfile[] = new Array();
 
   for (const logRecord of sortedLogs) {
-    const logDesc = contract.interface.parseLog(logRecord)
-    const id = logDesc.args.id
-    const to = logDesc.args.to
+    const logDesc = contract.interface.parseLog(logRecord);
+    const id = logDesc.args.id;
+    const to = logDesc.args.to;
 
     if (logDesc.name == 'Register') {
       registerEvents.push({
         id: Number(id),
         owner: to,
-      })
+      });
     }
   }
 
-  return registerEvents
-}
+  return registerEvents;
+};
 
 /**
  * Upsert the id and owner from recent registrations in the IdRegistry contract to Supabase
@@ -98,23 +95,23 @@ export async function upsertRegistrations(
   provider: Provider,
   contract: BaseContract
 ) {
-  const currentBlock = await provider.getBlockNumber()
+  const currentBlock = await provider.getBlockNumber();
 
   // Get all logs from the ID Registry contract since creation
   const allRegistrations = await getIdRegistryEvents({
     provider,
     contract,
     fromBlock: currentBlock - 100_000, // last ~2 weeks
-  })
+  });
 
   // Insert to Supabase to make sure we have didn't miss data while the indexer was down
-  const { error } = await supabase.from('profile').upsert(allRegistrations)
+  const { error } = await supabase.from('profile').upsert(allRegistrations);
 
   if (error) {
-    console.error('Error inserting registrations', error)
+    console.error('Error inserting registrations', error);
   } else {
-    console.log('Inserted all registrations to Supabase')
+    console.log('Inserted all registrations to Supabase');
   }
 
-  return allRegistrations
+  return allRegistrations;
 }

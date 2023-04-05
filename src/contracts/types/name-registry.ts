@@ -4,47 +4,47 @@ import {
   BigNumber,
   BigNumberish,
   BaseContract,
-} from 'ethers'
+} from 'ethers';
 
 export declare type EventFilter = {
-  address?: string
-  topics?: Array<string>
-  fromBlock?: string | number
-  toBlock?: string | number
-}
+  address?: string;
+  topics?: Array<string>;
+  fromBlock?: string | number;
+  toBlock?: string | number;
+};
 
 export interface ContractTransactionOverrides {
   /**
    * The maximum units of gas for the transaction to use
    */
-  gasLimit?: number
+  gasLimit?: number;
   /**
    * The price (in wei) per unit of gas
    */
-  gasPrice?: BigNumber | string | number | Promise<any>
+  gasPrice?: BigNumber | string | number | Promise<any>;
   /**
    * The nonce to use in the transaction
    */
-  nonce?: number
+  nonce?: number;
   /**
    * The amount to send with the transaction (i.e. msg.value)
    */
-  value?: BigNumber | string | number | Promise<any>
+  value?: BigNumber | string | number | Promise<any>;
   /**
    * The chain ID (or network ID) to use
    */
-  chainId?: number
+  chainId?: number;
 }
 
 export interface ContractCallOverrides {
   /**
    * The address to execute the call as
    */
-  from?: string
+  from?: string;
   /**
    * The maximum units of gas for the transaction to use
    */
-  gasLimit?: number
+  gasLimit?: number;
 }
 export type NameRegistryEvents =
   | 'AdminChanged'
@@ -68,30 +68,30 @@ export type NameRegistryEvents =
   | 'RoleRevoked'
   | 'Transfer'
   | 'Unpaused'
-  | 'Upgraded'
+  | 'Upgraded';
 export interface NameRegistryEventsContext {
-  AdminChanged(...parameters: any): EventFilter
-  Approval(...parameters: any): EventFilter
-  ApprovalForAll(...parameters: any): EventFilter
-  BeaconUpgraded(...parameters: any): EventFilter
-  CancelRecovery(...parameters: any): EventFilter
-  ChangeFee(...parameters: any): EventFilter
-  ChangePool(...parameters: any): EventFilter
-  ChangeRecoveryAddress(...parameters: any): EventFilter
-  ChangeTrustedCaller(...parameters: any): EventFilter
-  ChangeVault(...parameters: any): EventFilter
-  DisableTrustedOnly(...parameters: any): EventFilter
-  Initialized(...parameters: any): EventFilter
-  Invite(...parameters: any): EventFilter
-  Paused(...parameters: any): EventFilter
-  Renew(...parameters: any): EventFilter
-  RequestRecovery(...parameters: any): EventFilter
-  RoleAdminChanged(...parameters: any): EventFilter
-  RoleGranted(...parameters: any): EventFilter
-  RoleRevoked(...parameters: any): EventFilter
-  Transfer(...parameters: any): EventFilter
-  Unpaused(...parameters: any): EventFilter
-  Upgraded(...parameters: any): EventFilter
+  AdminChanged(...parameters: any): EventFilter;
+  Approval(...parameters: any): EventFilter;
+  ApprovalForAll(...parameters: any): EventFilter;
+  BeaconUpgraded(...parameters: any): EventFilter;
+  CancelRecovery(...parameters: any): EventFilter;
+  ChangeFee(...parameters: any): EventFilter;
+  ChangePool(...parameters: any): EventFilter;
+  ChangeRecoveryAddress(...parameters: any): EventFilter;
+  ChangeTrustedCaller(...parameters: any): EventFilter;
+  ChangeVault(...parameters: any): EventFilter;
+  DisableTrustedOnly(...parameters: any): EventFilter;
+  Initialized(...parameters: any): EventFilter;
+  Invite(...parameters: any): EventFilter;
+  Paused(...parameters: any): EventFilter;
+  Renew(...parameters: any): EventFilter;
+  RequestRecovery(...parameters: any): EventFilter;
+  RoleAdminChanged(...parameters: any): EventFilter;
+  RoleGranted(...parameters: any): EventFilter;
+  RoleRevoked(...parameters: any): EventFilter;
+  Transfer(...parameters: any): EventFilter;
+  Unpaused(...parameters: any): EventFilter;
+  Upgraded(...parameters: any): EventFilter;
 }
 export type NameRegistryMethodNames =
   | 'DEFAULT_ADMIN_ROLE'
@@ -147,89 +147,89 @@ export type NameRegistryMethodNames =
   | 'upgradeTo'
   | 'upgradeToAndCall'
   | 'vault'
-  | 'withdraw'
+  | 'withdraw';
 export interface AdminChangedEventEmittedResponse {
-  previousAdmin: string
-  newAdmin: string
+  previousAdmin: string;
+  newAdmin: string;
 }
 export interface ApprovalEventEmittedResponse {
-  owner: string
-  approved: string
-  tokenId: BigNumberish
+  owner: string;
+  approved: string;
+  tokenId: BigNumberish;
 }
 export interface ApprovalForAllEventEmittedResponse {
-  owner: string
-  operator: string
-  approved: boolean
+  owner: string;
+  operator: string;
+  approved: boolean;
 }
 export interface BeaconUpgradedEventEmittedResponse {
-  beacon: string
+  beacon: string;
 }
 export interface CancelRecoveryEventEmittedResponse {
-  by: string
-  tokenId: BigNumberish
+  by: string;
+  tokenId: BigNumberish;
 }
 export interface ChangeFeeEventEmittedResponse {
-  fee: BigNumberish
+  fee: BigNumberish;
 }
 export interface ChangePoolEventEmittedResponse {
-  pool: string
+  pool: string;
 }
 export interface ChangeRecoveryAddressEventEmittedResponse {
-  tokenId: BigNumberish
-  recovery: string
+  tokenId: BigNumberish;
+  recovery: string;
 }
 export interface ChangeTrustedCallerEventEmittedResponse {
-  trustedCaller: string
+  trustedCaller: string;
 }
 export interface ChangeVaultEventEmittedResponse {
-  vault: string
+  vault: string;
 }
 export interface InitializedEventEmittedResponse {
-  version: BigNumberish
+  version: BigNumberish;
 }
 export interface InviteEventEmittedResponse {
-  inviterId: BigNumberish
-  inviteeId: BigNumberish
-  fname: Arrayish
+  inviterId: BigNumberish;
+  inviteeId: BigNumberish;
+  fname: Arrayish;
 }
 export interface PausedEventEmittedResponse {
-  account: string
+  account: string;
 }
 export interface RenewEventEmittedResponse {
-  tokenId: BigNumberish
-  expiry: BigNumberish
+  tokenId: BigNumberish;
+  expiry: BigNumberish;
 }
 export interface RequestRecoveryEventEmittedResponse {
-  from: string
-  to: string
-  tokenId: BigNumberish
+  from: string;
+  to: string;
+  tokenId: BigNumberish;
 }
 export interface RoleAdminChangedEventEmittedResponse {
-  role: Arrayish
-  previousAdminRole: Arrayish
-  newAdminRole: Arrayish
+  role: Arrayish;
+  previousAdminRole: Arrayish;
+  newAdminRole: Arrayish;
 }
 export interface RoleGrantedEventEmittedResponse {
-  role: Arrayish
-  account: string
-  sender: string
+  role: Arrayish;
+  account: string;
+  sender: string;
 }
 export interface RoleRevokedEventEmittedResponse {
-  role: Arrayish
-  account: string
-  sender: string
+  role: Arrayish;
+  account: string;
+  sender: string;
 }
 export interface TransferEventEmittedResponse {
-  from: string
-  to: string
-  tokenId: BigNumberish
+  from: string;
+  to: string;
+  tokenId: BigNumberish;
 }
 export interface UnpausedEventEmittedResponse {
-  account: string
+  account: string;
 }
 export interface UpgradedEventEmittedResponse {
-  implementation: string
+  implementation: string;
 }
 export interface NameRegistry extends BaseContract {
   /**
@@ -238,7 +238,7 @@ export interface NameRegistry extends BaseContract {
    * StateMutability: view
    * Type: function
    */
-  DEFAULT_ADMIN_ROLE(overrides?: ContractCallOverrides): Promise<string>
+  DEFAULT_ADMIN_ROLE(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: false
@@ -251,7 +251,7 @@ export interface NameRegistry extends BaseContract {
     to: string,
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -262,7 +262,7 @@ export interface NameRegistry extends BaseContract {
   balanceOf(
     owner: string,
     overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  ): Promise<BigNumber>;
   /**
    * Payable: true
    * Constant: false
@@ -277,7 +277,7 @@ export interface NameRegistry extends BaseContract {
     tokenId: BigNumberish,
     recovery: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -288,7 +288,7 @@ export interface NameRegistry extends BaseContract {
   cancelRecovery(
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -299,7 +299,7 @@ export interface NameRegistry extends BaseContract {
   changeFee(
     _fee: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -310,7 +310,7 @@ export interface NameRegistry extends BaseContract {
   changePool(
     _pool: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -323,7 +323,7 @@ export interface NameRegistry extends BaseContract {
     tokenId: BigNumberish,
     recovery: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -334,7 +334,7 @@ export interface NameRegistry extends BaseContract {
   changeTrustedCaller(
     _trustedCaller: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -345,7 +345,7 @@ export interface NameRegistry extends BaseContract {
   changeVault(
     _vault: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -356,7 +356,7 @@ export interface NameRegistry extends BaseContract {
   completeRecovery(
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -365,7 +365,7 @@ export interface NameRegistry extends BaseContract {
    */
   disableTrustedOnly(
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -376,14 +376,14 @@ export interface NameRegistry extends BaseContract {
   expiryOf(
     parameter0: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  ): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  fee(overrides?: ContractCallOverrides): Promise<BigNumber>
+  fee(overrides?: ContractCallOverrides): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
@@ -400,7 +400,7 @@ export interface NameRegistry extends BaseContract {
     secret: Arrayish,
     recovery: string,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -411,7 +411,7 @@ export interface NameRegistry extends BaseContract {
   getApproved(
     tokenId: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -422,7 +422,7 @@ export interface NameRegistry extends BaseContract {
   getRoleAdmin(
     role: Arrayish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: false
@@ -435,7 +435,7 @@ export interface NameRegistry extends BaseContract {
     role: Arrayish,
     account: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -448,7 +448,7 @@ export interface NameRegistry extends BaseContract {
     role: Arrayish,
     account: string,
     overrides?: ContractCallOverrides
-  ): Promise<boolean>
+  ): Promise<boolean>;
   /**
    * Payable: false
    * Constant: false
@@ -465,7 +465,7 @@ export interface NameRegistry extends BaseContract {
     _vault: string,
     _pool: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -478,7 +478,7 @@ export interface NameRegistry extends BaseContract {
     owner: string,
     operator: string,
     overrides?: ContractCallOverrides
-  ): Promise<boolean>
+  ): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
@@ -489,7 +489,7 @@ export interface NameRegistry extends BaseContract {
   isTrustedForwarder(
     forwarder: string,
     overrides?: ContractCallOverrides
-  ): Promise<boolean>
+  ): Promise<boolean>;
   /**
    * Payable: false
    * Constant: false
@@ -500,14 +500,14 @@ export interface NameRegistry extends BaseContract {
   makeCommit(
     commit: Arrayish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  name(overrides?: ContractCallOverrides): Promise<string>
+  name(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -518,35 +518,35 @@ export interface NameRegistry extends BaseContract {
   ownerOf(
     tokenId: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
    */
-  pause(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>
+  pause(overrides?: ContractTransactionOverrides): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  paused(overrides?: ContractCallOverrides): Promise<boolean>
+  paused(overrides?: ContractCallOverrides): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  pool(overrides?: ContractCallOverrides): Promise<string>
+  pool(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  proxiableUUID(overrides?: ContractCallOverrides): Promise<string>
+  proxiableUUID(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: true
    * Constant: false
@@ -557,7 +557,7 @@ export interface NameRegistry extends BaseContract {
   reclaim(
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -568,7 +568,7 @@ export interface NameRegistry extends BaseContract {
   recoveryClockOf(
     parameter0: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  ): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
@@ -579,7 +579,7 @@ export interface NameRegistry extends BaseContract {
   recoveryDestinationOf(
     parameter0: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -590,7 +590,7 @@ export interface NameRegistry extends BaseContract {
   recoveryOf(
     parameter0: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: true
    * Constant: false
@@ -607,7 +607,7 @@ export interface NameRegistry extends BaseContract {
     secret: Arrayish,
     recovery: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: true
    * Constant: false
@@ -618,7 +618,7 @@ export interface NameRegistry extends BaseContract {
   renew(
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -631,7 +631,7 @@ export interface NameRegistry extends BaseContract {
     role: Arrayish,
     account: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -644,7 +644,7 @@ export interface NameRegistry extends BaseContract {
     tokenId: BigNumberish,
     to: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -657,7 +657,7 @@ export interface NameRegistry extends BaseContract {
     role: Arrayish,
     account: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -672,7 +672,7 @@ export interface NameRegistry extends BaseContract {
     to: string,
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -689,7 +689,7 @@ export interface NameRegistry extends BaseContract {
     tokenId: BigNumberish,
     data: Arrayish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -702,7 +702,7 @@ export interface NameRegistry extends BaseContract {
     operator: string,
     approved: boolean,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
@@ -713,14 +713,14 @@ export interface NameRegistry extends BaseContract {
   supportsInterface(
     interfaceId: Arrayish,
     overrides?: ContractCallOverrides
-  ): Promise<boolean>
+  ): Promise<boolean>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  symbol(overrides?: ContractCallOverrides): Promise<string>
+  symbol(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: true
@@ -731,7 +731,7 @@ export interface NameRegistry extends BaseContract {
   timestampOf(
     parameter0: Arrayish,
     overrides?: ContractCallOverrides
-  ): Promise<BigNumber>
+  ): Promise<BigNumber>;
   /**
    * Payable: false
    * Constant: true
@@ -742,7 +742,7 @@ export interface NameRegistry extends BaseContract {
   tokenURI(
     tokenId: BigNumberish,
     overrides?: ContractCallOverrides
-  ): Promise<string>
+  ): Promise<string>;
   /**
    * Payable: false
    * Constant: false
@@ -757,21 +757,21 @@ export interface NameRegistry extends BaseContract {
     to: string,
     tokenId: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  trustedCaller(overrides?: ContractCallOverrides): Promise<string>
+  trustedCaller(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  trustedOnly(overrides?: ContractCallOverrides): Promise<BigNumber>
+  trustedOnly(overrides?: ContractCallOverrides): Promise<BigNumber>;
   /**
    * Payable: true
    * Constant: false
@@ -790,7 +790,7 @@ export interface NameRegistry extends BaseContract {
     inviter: BigNumberish,
     invitee: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -799,7 +799,7 @@ export interface NameRegistry extends BaseContract {
    */
   unpause(
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: false
@@ -810,7 +810,7 @@ export interface NameRegistry extends BaseContract {
   upgradeTo(
     newImplementation: string,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: true
    * Constant: false
@@ -823,14 +823,14 @@ export interface NameRegistry extends BaseContract {
     newImplementation: string,
     data: Arrayish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
   /**
    * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
    */
-  vault(overrides?: ContractCallOverrides): Promise<string>
+  vault(overrides?: ContractCallOverrides): Promise<string>;
   /**
    * Payable: false
    * Constant: false
@@ -841,5 +841,5 @@ export interface NameRegistry extends BaseContract {
   withdraw(
     amount: BigNumberish,
     overrides?: ContractTransactionOverrides
-  ): Promise<ContractTransaction>
+  ): Promise<ContractTransaction>;
 }
