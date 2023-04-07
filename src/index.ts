@@ -41,7 +41,7 @@ idRegistry.on(eventToWatch, async (to, id) => {
 await upsertRegistrations(provider, idRegistry);
 
 // Run job every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('2-25,45-59/2 * * * *', async () => {
   console.log(`Starting every 5 minute index job at ${new Date()}`);
   await indexAllCasts(10_000);
   await updateAllProfiles();
