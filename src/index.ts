@@ -40,9 +40,9 @@ idRegistry.on(eventToWatch, async (to, id) => {
 // Make sure we didn't miss any profiles when the indexer was offline
 await upsertRegistrations(provider, idRegistry);
 
-// Run job every minute
-cron.schedule('* * * * *', async () => {
-  console.log(`Starting minutely index job at ${new Date()}`);
+// Run job every 5 minutes
+cron.schedule('*/5 * * * *', async () => {
+  console.log(`Starting every 5 minute index job at ${new Date()}`);
   await indexAllCasts(10_000);
   await updateAllProfiles();
 });
@@ -52,8 +52,8 @@ cron.schedule('0 * * * *', async () => {
   await indexVerifications();
 });
 
-// Run job every two hours at :30
-cron.schedule('30 */2 * * *', async () => {
+// Run job every hour at :30
+cron.schedule('30 * * * *', async () => {
   console.log(`Starting seed job at ${new Date()}`);
   await indexAllCasts();
 });
