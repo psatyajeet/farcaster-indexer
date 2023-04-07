@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { Contract, providers } from 'ethers';
 import cron from 'node-cron';
 
+
+
 import { idRegistryAbi, idRegistryAddr } from './contracts/id-registry';
 import { IdRegistry, IdRegistryEvents } from './contracts/types/id-registry';
 import { indexAllCasts } from './functions/index-casts';
@@ -10,6 +12,7 @@ import { upsertRegistrations } from './functions/read-logs';
 import { updateAllProfiles } from './functions/update-profiles';
 import supabase from './supabase';
 import { FlattenedProfile } from './types/index';
+
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET;
@@ -42,18 +45,31 @@ await upsertRegistrations(provider, idRegistry);
 
 // Run job every 5 minutes
 cron.schedule('2-25,45-59/2 * * * *', async () => {
-  console.log(`Starting every 5 minute index job at ${new Date()}`);
-  await indexAllCasts(10_000);
-  await updateAllProfiles();
+  try {
+    console.log(`Starting every 2 minute index job at ${new Date()}`);
+    await indexAllCasts(10_000);
+    await updateAllProfiles();
+  } catch (error) {
+    console.log('Error in every 2 minute index job', error);
+  }
 });
 
 // Run job every hour
 cron.schedule('0 * * * *', async () => {
-  await indexVerifications();
+  try {
+    console.log(`Starting index verifications`);
+    await indexVerifications();
+  } catch (error) {
+    console.log('Error in every hour index job', error);
+  }
 });
 
 // Run job every hour at :30
 cron.schedule('30 * * * *', async () => {
-  console.log(`Starting seed job at ${new Date()}`);
-  await indexAllCasts();
+  try {
+    console.log(`Starting seed job at ${new Date()}`);
+    await indexAllCasts();
+  } catch (error) {
+    console.log('Error in every hour index job', error);
+  }
 });
