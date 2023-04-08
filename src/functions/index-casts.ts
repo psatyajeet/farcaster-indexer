@@ -53,8 +53,8 @@ export async function indexAllCasts(limit?: number) {
     return cast;
   });
 
-  // Break formattedCasts into chunks of 1000
-  const chunks = breakIntoChunks(formattedCasts, 1000);
+  // Break formattedCasts into chunks of 100
+  const chunks = breakIntoChunks(formattedCasts, 100);
 
   // Upsert each chunk into the Supabase table
   for (const chunk of chunks) {
@@ -72,8 +72,8 @@ export async function indexAllCasts(limit?: number) {
   const allTags = getAllTags(formattedCasts);
   console.log(`Finished getting tags`);
 
-  // Break allTags into chunks of 1000
-  const tagChunks = breakIntoChunks(allTags, 1000);
+  // Break allTags into chunks of 100
+  const tagChunks = breakIntoChunks(allTags, 100);
 
   // Upsert each chunk into the Supabase table
   for (const tagChunk of tagChunks) {
@@ -95,8 +95,8 @@ export async function indexAllCasts(limit?: number) {
     const uniqueTags = Array.from(new Set(data.map((d) => d.tag)));
     const tagMentions = getAllTagMentions(formattedCasts, uniqueTags);
 
-    // Break allTags into chunks of 1000
-    const tagChunks = breakIntoChunks(tagMentions, 1000);
+    // Break allTags into chunks of 100
+    const tagChunks = breakIntoChunks(tagMentions, 100);
 
     // Upsert each chunk into the Supabase table
     for (const tagChunk of tagChunks) {

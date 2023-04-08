@@ -2,8 +2,6 @@ import 'dotenv/config';
 import { Contract, providers } from 'ethers';
 import cron from 'node-cron';
 
-
-
 import { idRegistryAbi, idRegistryAddr } from './contracts/id-registry';
 import { IdRegistry, IdRegistryEvents } from './contracts/types/id-registry';
 import { indexAllCasts } from './functions/index-casts';
@@ -12,7 +10,6 @@ import { upsertRegistrations } from './functions/read-logs';
 import { updateAllProfiles } from './functions/update-profiles';
 import supabase from './supabase';
 import { FlattenedProfile } from './types/index';
-
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET;
