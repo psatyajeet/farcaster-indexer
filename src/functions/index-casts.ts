@@ -1,5 +1,6 @@
 import got from 'got';
 
+import log from '../helpers/log';
 import { MERKLE_REQUEST_OPTIONS } from '../merkle';
 import supabase from '../supabase';
 import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index';
@@ -17,7 +18,6 @@ interface DbTagCount {
  */
 export async function indexAllCasts(limit?: number) {
   const startTime = Date.now();
-  console.log(`Indexing casts at ${startTime.toString()}...`);
   const allCasts = await getAllCasts(limit);
   const cleanedCasts = cleanCasts(allCasts);
 
@@ -56,6 +56,10 @@ export async function indexAllCasts(limit?: number) {
   // Break formattedCasts into chunks of 100
   const chunks = breakIntoChunks(formattedCasts, 100);
 
+  log.info(
+    `Started upserting casts, ${formattedCasts.length} total in ${chunks.length} chunks`
+  );
+
   // Upsert each chunk into the Supabase table
   for (const chunk of chunks) {
     const { error } = await supabase.from('casts').upsert(chunk, {
@@ -67,13 +71,17 @@ export async function indexAllCasts(limit?: number) {
     }
   }
 
-  console.log(`Started getting tags`);
+  log.info(`Started getting tags`);
   // Get all tags from the casts
   const allTags = getAllTags(formattedCasts);
-  console.log(`Finished getting tags`);
+  log.info(`Finished getting tags`);
 
   // Break allTags into chunks of 100
   const tagChunks = breakIntoChunks(allTags, 100);
+
+  log.info(
+    `Started upserting tags, ${allTags.length} total in ${tagChunks.length} chunks`
+  );
 
   // Upsert each chunk into the Supabase table
   for (const tagChunk of tagChunks) {
@@ -86,11 +94,11 @@ export async function indexAllCasts(limit?: number) {
     }
   }
 
-  console.log(`Started getting tag mentions`);
+  log.info(`Started getting tag mentions`);
   // Get all unique tags from cast_tags table
   const data = await getUniqueCastTags();
   if (!data) {
-    console.log(`No tags found`);
+    log.warn(`No tags found`);
   } else {
     const uniqueTags = Array.from(new Set(data.map((d) => d.tag)));
     const tagMentions = getAllTagMentions(formattedCasts, uniqueTags);
@@ -98,6 +106,9 @@ export async function indexAllCasts(limit?: number) {
     // Break allTags into chunks of 100
     const tagChunks = breakIntoChunks(tagMentions, 100);
 
+    log.info(
+      `Started upserting tags mentions, ${tagMentions.length} total in ${tagChunks.length} chunks`
+    );
     // Upsert each chunk into the Supabase table
     for (const tagChunk of tagChunks) {
       const { error } = await supabase.from('cast_tags').upsert(tagChunk, {
@@ -109,19 +120,17 @@ export async function indexAllCasts(limit?: number) {
       }
     }
   }
-  console.log(`Done getting tag mentions`);
+  log.info(`Done getting tag mentions`);
 
   const endTime = Date.now();
   const duration = (endTime - startTime) / 1000;
 
   if (duration > 60) {
     // If it takes more than 60 seconds, log the duration so we can optimize
-    console.log(
-      `Updated ${formattedCasts.length} casts in ${duration} seconds`
-    );
+    log.info(`Updated ${formattedCasts.length} casts in ${duration} seconds`);
   }
 
-  console.log(`Finished indexing casts at ${endTime.toString()}`);
+  log.info(`Finished indexing casts at ${endTime.toString()}`);
 }
 
 /**

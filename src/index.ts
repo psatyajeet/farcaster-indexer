@@ -8,6 +8,7 @@ import { indexAllCasts } from './functions/index-casts';
 import { indexVerifications } from './functions/index-verifications';
 import { upsertRegistrations } from './functions/read-logs';
 import { updateAllProfiles } from './functions/update-profiles';
+import log from './helpers/log';
 import supabase from './supabase';
 import { FlattenedProfile } from './types/index';
 
@@ -25,7 +26,7 @@ const idRegistry = new Contract(
 // Listen for new events on the ID Registry
 const eventToWatch: IdRegistryEvents = 'Register';
 idRegistry.on(eventToWatch, async (to, id) => {
-  console.log('New user registered.', Number(id), to);
+  log.info('New user registered.', Number(id), to);
 
   const profile: FlattenedProfile = {
     id: Number(id),
@@ -43,30 +44,30 @@ await upsertRegistrations(provider, idRegistry);
 // Run job every 5 minutes
 cron.schedule('2-25,45-59/2 * * * *', async () => {
   try {
-    console.log(`Starting every 2 minute index job at ${new Date()}`);
+    log.info(`Starting every 2 minute index job`);
     await indexAllCasts(10_000);
     await updateAllProfiles();
   } catch (error) {
-    console.log('Error in every 2 minute index job', error);
+    log.error('Error in every 2 minute index job', error);
   }
 });
 
 // Run job every hour
 cron.schedule('0 * * * *', async () => {
   try {
-    console.log(`Starting index verifications`);
+    log.info(`Starting index verifications`);
     await indexVerifications();
   } catch (error) {
-    console.log('Error in every hour index job', error);
+    log.error('Error in every hour index job', error);
   }
 });
 
 // Run job every hour at :30
 cron.schedule('30 * * * *', async () => {
   try {
-    console.log(`Starting seed job at ${new Date()}`);
+    log.info(`Starting seed job at ${new Date()}`);
     await indexAllCasts();
   } catch (error) {
-    console.log('Error in every hour index job', error);
+    log.error('Error in every hour index job', error);
   }
 });

@@ -1,6 +1,7 @@
 import { Provider } from '@ethersproject/providers';
 import { BaseContract } from 'ethers';
 
+import log from '../helpers/log';
 import supabase from '../supabase';
 import { FlattenedProfile } from '../types';
 
@@ -108,9 +109,9 @@ export async function upsertRegistrations(
   const { error } = await supabase.from('profile').upsert(allRegistrations);
 
   if (error) {
-    console.error('Error inserting registrations', error);
+    log.error('Error inserting registrations', error);
   } else {
-    console.log('Inserted all registrations to Supabase');
+    log.info('Inserted all registrations to Supabase');
   }
 
   return allRegistrations;

@@ -7,6 +7,7 @@ import { IdRegistry } from './../contracts/types/id-registry.js';
 import { indexAllCasts } from './../functions/index-casts.js';
 import { upsertRegistrations } from './../functions/read-logs.js';
 import { updateAllProfiles } from './../functions/update-profiles.js';
+import log from './log.js';
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET;
@@ -19,18 +20,18 @@ const idRegistry = new Contract(
   provider
 ) as IdRegistry;
 
-console.log('Seeding recent registrations from contract logs...');
+log.info('Seeding recent registrations from contract logs...');
 await upsertRegistrations(provider, idRegistry);
 
-console.log('Seeding profiles from Merkle APIs...');
+log.info('Seeding profiles from Merkle APIs...');
 await updateAllProfiles();
 
-console.log('Seeding casts from Merkle APIs...');
+log.info('Seeding casts from Merkle APIs...');
 await indexAllCasts();
 
 if (process.argv.includes('--verifications')) {
-  console.log('Seeding verifications from Merkle APIs...');
+  log.info('Seeding verifications from Merkle APIs...');
   await indexVerifications();
 }
 
-console.log('Seeding complete!');
+log.info('Seeding complete!');

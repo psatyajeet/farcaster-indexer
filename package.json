@@ -17,12 +17,16 @@
     "test": "yarn clean && jest"
   },
   "dependencies": {
+    "@farcaster/hub-nodejs": "^0.5.0",
+    "@farcaster/js": "^0.3.0",
     "@standard-crypto/farcaster-js": "^5.5.2",
     "@supabase/supabase-js": "^2.1.3",
+    "axios": "^1.3.4",
     "dotenv": "^16.0.1",
     "ethers": "^5.7.2",
     "got": "^11.8.2",
     "node-cron": "3.0.0",
+    "tslog": "^4.8.2",
     "typescript": "^4.8.3"
   },
   "devDependencies": {
