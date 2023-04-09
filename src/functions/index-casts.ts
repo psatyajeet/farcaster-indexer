@@ -1,5 +1,4 @@
 import got from 'got';
-
 import log from '../helpers/log';
 import { MERKLE_REQUEST_OPTIONS } from '../merkle';
 import supabase from '../supabase';
@@ -82,7 +81,6 @@ export async function indexAllCasts(limit?: number) {
   log.info(
     `Started upserting tags, ${allTags.length} total in ${tagChunks.length} chunks`
   );
-
   // Upsert each chunk into the Supabase table
   for (const tagChunk of tagChunks) {
     const { error } = await supabase.from('cast_tags').upsert(tagChunk, {
@@ -93,10 +91,13 @@ export async function indexAllCasts(limit?: number) {
       throw error;
     }
   }
+  log.info(`Finished upserting tags`);
 
   log.info(`Started getting tag mentions`);
   // Get all unique tags from cast_tags table
   const data = await getUniqueCastTags();
+  log.info(`Finished getting tag mentions`);
+
   if (!data) {
     log.warn(`No tags found`);
   } else {
@@ -119,8 +120,8 @@ export async function indexAllCasts(limit?: number) {
         throw error;
       }
     }
+    log.info(`Finished upserting tags mentions`);
   }
-  log.info(`Done getting tag mentions`);
 
   const endTime = Date.now();
   const duration = (endTime - startTime) / 1000;
