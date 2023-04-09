@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import { Contract, providers } from 'ethers';
 import cron from 'node-cron';
-
 import { idRegistryAbi, idRegistryAddr } from './contracts/id-registry';
 import { IdRegistry, IdRegistryEvents } from './contracts/types/id-registry';
 import { indexAllCasts } from './functions/index-casts';
@@ -11,6 +10,7 @@ import { updateAllProfiles } from './functions/update-profiles';
 import log from './helpers/log';
 import supabase from './supabase';
 import { FlattenedProfile } from './types/index';
+
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET;
@@ -41,8 +41,8 @@ idRegistry.on(eventToWatch, async (to, id) => {
 // Make sure we didn't miss any profiles when the indexer was offline
 await upsertRegistrations(provider, idRegistry);
 
-// Run job every 5 minutes
-cron.schedule('2-25,45-59/2 * * * *', async () => {
+// Run job every 2 minutes
+cron.schedule('*/2 * * * *', async () => {
   try {
     log.info(`Starting every 2 minute index job`);
     await indexAllCasts(10_000);
