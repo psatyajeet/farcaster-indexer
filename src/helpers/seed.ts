@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import { Contract, providers } from 'ethers';
-
 import { indexVerifications } from '../functions/index-verifications.js';
 import { idRegistryAbi, idRegistryAddr } from './../contracts/id-registry.js';
 import { IdRegistry } from './../contracts/types/id-registry.js';
@@ -8,6 +7,7 @@ import { indexAllCasts } from './../functions/index-casts.js';
 import { upsertRegistrations } from './../functions/read-logs.js';
 import { updateAllProfiles } from './../functions/update-profiles.js';
 import log from './log.js';
+
 
 // Set up the provider
 const ALCHEMY_SECRET = process.env.ALCHEMY_SECRET;
@@ -27,7 +27,7 @@ log.info('Seeding profiles from Merkle APIs...');
 await updateAllProfiles();
 
 log.info('Seeding casts from Merkle APIs...');
-await indexAllCasts();
+await indexAllCasts(new Set());
 
 if (process.argv.includes('--verifications')) {
   log.info('Seeding verifications from Merkle APIs...');

@@ -5,6 +5,7 @@ import supabase from '../supabase';
 import { Cast, CastTag, FlattenedCast, MerkleResponse } from '../types/index';
 import { breakIntoChunks } from '../utils';
 
+
 // This isn't deduped for different capitalizations of the same tag
 interface DbTagCount {
   tag: string;
@@ -15,10 +16,13 @@ interface DbTagCount {
  * Index the casts from all Farcaster profiles and insert them into Supabase
  * @param limit The max number of recent casts to index
  */
-export async function indexAllCasts(limit?: number) {
+export async function indexAllCasts(
+  alreadyProcessedHashes: Set<string>,
+  limit?: number
+): Promise<string[]> {
   const startTime = Date.now();
   const allCasts = await getAllCasts(limit);
-  const cleanedCasts = cleanCasts(allCasts);
+  const cleanedCasts = cleanCasts(allCasts, alreadyProcessedHashes);
 
   const formattedCasts: FlattenedCast[] = cleanedCasts.map((c) => {
     const cast: FlattenedCast = {
@@ -51,6 +55,8 @@ export async function indexAllCasts(limit?: number) {
 
     return cast;
   });
+
+  const formattedCastHashes = formattedCasts.map((c) => c.hash);
 
   // Break formattedCasts into chunks of 100
   const chunks = breakIntoChunks(formattedCasts, 100);
@@ -132,6 +138,8 @@ export async function indexAllCasts(limit?: number) {
   }
 
   log.info(`Finished indexing casts at ${endTime.toString()}`);
+
+  return formattedCastHashes;
 }
 
 /**
@@ -191,10 +199,16 @@ function buildCastEndpoint(cursor?: string): string {
   }`;
 }
 
-function cleanCasts(casts: Cast[]): Cast[] {
+function cleanCasts(
+  casts: Cast[],
+  alreadyProcessedHashes: Set<string>
+): Cast[] {
   const cleanedCasts: Cast[] = new Array();
 
   for (const cast of casts) {
+    // Remove already processed casts
+    if (alreadyProcessedHashes.has(cast.hash)) continue;
+
     // Remove recasts
     if (cast.text.startsWith('recast:farcaster://')) continue;
 

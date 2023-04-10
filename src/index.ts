@@ -41,11 +41,17 @@ idRegistry.on(eventToWatch, async (to, id) => {
 // Make sure we didn't miss any profiles when the indexer was offline
 await upsertRegistrations(provider, idRegistry);
 
+const processedHashes = new Set<string>();
+
 // Run job every 5 minutes
 cron.schedule('*/5 * * * *', async () => {
   try {
     log.info(`Starting every 5 minute index job`);
-    await indexAllCasts(10_000);
+    const processedCastHashes = await indexAllCasts(processedHashes, 10_000);
+
+    // Add processedCastHashes to processedHashes
+    processedCastHashes.forEach((hash) => processedHashes.add(hash));
+
     await updateAllProfiles();
   } catch (error) {
     log.error('Error in every 5 minute index job', error);
@@ -66,7 +72,10 @@ cron.schedule('0 * * * *', async () => {
 cron.schedule('30 * * * *', async () => {
   try {
     log.info(`Starting seed job at ${new Date()}`);
-    await indexAllCasts();
+    const processedCastHashes = await indexAllCasts(new Set());
+
+    // Add processedCastHashes to processedHashes
+    processedCastHashes.forEach((hash) => processedHashes.add(hash));
   } catch (error) {
     log.error('Error in every hour index job', error);
   }
