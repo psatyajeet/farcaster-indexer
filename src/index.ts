@@ -41,14 +41,14 @@ idRegistry.on(eventToWatch, async (to, id) => {
 // Make sure we didn't miss any profiles when the indexer was offline
 await upsertRegistrations(provider, idRegistry);
 
-// Run job every 2 minutes
-cron.schedule('*/2 * * * *', async () => {
+// Run job every 5 minutes
+cron.schedule('*/5 * * * *', async () => {
   try {
-    log.info(`Starting every 2 minute index job`);
+    log.info(`Starting every 5 minute index job`);
     await indexAllCasts(10_000);
     await updateAllProfiles();
   } catch (error) {
-    log.error('Error in every 2 minute index job', error);
+    log.error('Error in every 5 minute index job', error);
   }
 });
 
