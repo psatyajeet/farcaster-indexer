@@ -76,6 +76,8 @@ export async function indexAllCasts(
     }
   }
 
+  log.info(`Finished upserting casts`);
+
   log.info(`Started getting tags`);
   // Get all tags from the casts
   const allTags = getAllTags(formattedCasts);
