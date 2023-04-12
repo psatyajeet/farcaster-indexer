@@ -18,7 +18,8 @@ interface DbTagCount {
  */
 export async function indexAllCasts(
   alreadyProcessedHashes: Set<string>,
-  limit?: number
+  limit: number | null,
+  processNumber?: number
 ): Promise<string[]> {
   const startTime = Date.now();
   const allCasts = await getAllCasts(limit);
@@ -149,7 +150,7 @@ export async function indexAllCasts(
  * @param limit The maximum number of casts to return. If not provided, all casts will be returned.
  * @returns An array of all casts on Farcaster
  */
-async function getAllCasts(limit?: number): Promise<Cast[]> {
+async function getAllCasts(limit?: number | null): Promise<Cast[]> {
   const allCasts: Cast[] = new Array();
   let endpoint = buildCastEndpoint();
 

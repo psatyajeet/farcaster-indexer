@@ -27,7 +27,7 @@ log.info('Seeding profiles from Merkle APIs...');
 await updateAllProfiles();
 
 log.info('Seeding casts from Merkle APIs...');
-await indexAllCasts(new Set());
+await indexAllCasts(new Set(), null);
 
 if (process.argv.includes('--verifications')) {
   log.info('Seeding verifications from Merkle APIs...');

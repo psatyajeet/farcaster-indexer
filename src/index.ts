@@ -44,10 +44,17 @@ await upsertRegistrations(provider, idRegistry);
 const processedHashes = new Set<string>();
 
 // Run job every 15 minutes
-cron.schedule('*/15 * * * *', async () => {
+cron.schedule('5,20,45,55 * * * *', async () => {
   try {
-    log.info(`Starting every 15 minute index job`);
-    const processedCastHashes = await indexAllCasts(processedHashes, 10_000);
+    // Get random number to assign to process
+    const random = Math.floor(Math.random() * 1000);
+
+    log.info(`[${random}] - Starting every 15 minute index job`);
+    const processedCastHashes = await indexAllCasts(
+      processedHashes,
+      10_000,
+      random
+    );
 
     // Add processedCastHashes to processedHashes
     processedCastHashes.forEach((hash) => processedHashes.add(hash));
@@ -71,8 +78,10 @@ cron.schedule('0 * * * *', async () => {
 // Run job every two hours at :30
 cron.schedule('30 */2 * * *', async () => {
   try {
-    log.info(`Starting seed job at ${new Date()}`);
-    const processedCastHashes = await indexAllCasts(new Set());
+    const random = Math.floor(Math.random() * 1000);
+
+    log.info(`[${random}] Starting seed job at ${new Date()}`);
+    const processedCastHashes = await indexAllCasts(new Set(), null, random);
 
     // Add processedCastHashes to processedHashes
     processedCastHashes.forEach((hash) => processedHashes.add(hash));
