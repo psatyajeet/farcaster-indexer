@@ -76,7 +76,7 @@ cron.schedule('0 * * * *', async () => {
 });
 
 // Run job every two hours at :30
-cron.schedule('30 */2 * * *', async () => {
+cron.schedule('30 */4 * * *', async () => {
   try {
     const random = Math.floor(Math.random() * 1000);
 
