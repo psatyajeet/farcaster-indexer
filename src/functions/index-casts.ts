@@ -81,7 +81,7 @@ export async function indexAllCasts(
 
   log.info(`Started getting tags`);
   // Get all tags from the casts
-  const allTags = getAllTags(formattedCasts);
+  const allTags = await getAllTags(formattedCasts);
   log.info(`Finished getting tags`);
 
   // Break allTags into chunks of 100
@@ -266,41 +266,87 @@ async function getUniqueCastTags(): Promise<DbTagCount[]> {
   return tags;
 }
 
-export function getAllTags(casts: FlattenedCast[]): CastTag[] {
+function generatePrompt(cast: string): string {
+  return `A tweet is shared below between backticks. Read the tweet and come up with 1-3 hashtags to describe the tweet. Hashtags should have one word only. Return a comma separated list of hashtags after the text "Hashtags:"
+
+  \`\`\`
+  ${cast}
+  \`\`\`
+  
+  Hashtags:`;
+}
+
+function getCleanedTag(
+  tag: string,
+  processedTags: Set<string>
+): { cleanedTag: string; lowerCaseTag: string } | null {
+  const cleanedTag = tag.replaceAll('#', '').trim();
+  const lowerCaseTag = cleanedTag.toLowerCase();
+  if (cleanedTag.length < 2) {
+    return null; // Skip tags that are just a single character
+  }
+  if (processedTags.has(lowerCaseTag)) {
+    return null; // Skip tags that have already been processed
+  }
+  if (!cleanedTag) {
+    return null; // Skip empty tags
+  }
+
+  return { cleanedTag, lowerCaseTag };
+}
+
+export async function getAllTags(casts: FlattenedCast[]): Promise<CastTag[]> {
   const TAGS_TO_IGNORE = ['what', 'things', 'did', 'post', 'new'];
   const cleanedTags: CastTag[] = new Array();
 
   for (const cast of casts) {
     const text = cast.text.replace(/(https?:\/\/[^\s]+)/g, '');
     // Find all hashtags in text
-    // const tags = text.match(/#[a-zA-Z][\w[:punct:]\-_]+/g) // matches a letter followed by any letter or number
+    const tags = text.match(/(?:^|\s)#([a-zA-Z][\w’'_-]+)/g) as string[]; // matches a letter followed by any letter or number
 
-    const tags = text.match(/(?:^|\s)#([a-zA-Z][\w’'_-]+)/g); // matches a letter followed by any letter or number
+    // Get tags from GPT
+    let gptTags: string[] = [];
+    const prompt = generatePrompt(text);
+    const gptResponse = await createChatCompletion(prompt);
+    if (gptResponse.status === 200) {
+      const { data } = gptResponse;
+      const tagsString: string = data.choices[0].message.content;
+      const usage = data.usage;
+
+      gptTags = tagsString.split(',').map((t) => t.trim());
+    }
 
     // If no matches found, continue
-    if (!tags) {
-      continue;
-    } else {
+    if (tags || gptTags.length > 0) {
       const processedTags = new Set<string>(TAGS_TO_IGNORE);
-      for (const tag of tags) {
-        const cleanedTag = tag.replaceAll('#', '').trim();
-        const lowerCaseTag = cleanedTag.toLowerCase();
-        if (cleanedTag.length < 2) {
-          continue; // Skip tags that are just a single character
-        }
-        if (processedTags.has(lowerCaseTag)) {
-          continue; // Skip tags that have already been processed
-        }
+      for (const tag of tags || []) {
+        const cleanedTag = getCleanedTag(tag, processedTags);
         if (!cleanedTag) {
-          continue; // Skip empty tags
+          continue;
         }
         cleanedTags.push({
           cast_hash: cast.hash,
-          tag: cleanedTag,
+          tag: cleanedTag.cleanedTag,
           implicit: false,
+          gpt: false,
           published_at: cast.published_at,
         });
-        processedTags.add(lowerCaseTag);
+        processedTags.add(cleanedTag.lowerCaseTag);
+      }
+
+      for (const tag of gptTags) {
+        const cleanedTag = getCleanedTag(tag, processedTags);
+        if (!cleanedTag) {
+          continue;
+        }
+        cleanedTags.push({
+          cast_hash: cast.hash,
+          tag: cleanedTag.cleanedTag,
+          implicit: false,
+          gpt: true,
+          published_at: cast.published_at,
+        });
+        processedTags.add(cleanedTag.lowerCaseTag);
       }
     }
   }
@@ -337,6 +383,7 @@ export function getAllTagMentions(
           cast_hash: cast.hash,
           tag: match,
           implicit: true,
+          gpt: false,
           published_at: cast.published_at,
         };
         cleanedTags.push(cleanedTag);

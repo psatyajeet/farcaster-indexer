@@ -126,6 +126,7 @@ export interface CastTag {
   cast_hash: string;
   tag: string;
   implicit: boolean;
+  gpt: boolean;
   published_at: Date;
 }
 
